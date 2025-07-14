@@ -2,11 +2,9 @@
     <header class="bg-white border-b border-solid border-gray-100 box-border px-6 h-14 flex items-center justify-between">
         <!-- 左侧 Logo 和名称 -->
         <div class="flex items-center gap-1">
-            <img class="w-7 h-7" src="../assets/img/logo.gif" alt="">
-            <div class="flex items-center space-x-2">
-                <h1 class="text-xl font-semibold text-3c">智绘</h1>
-                <!-- <span class="text-sm text-gray-500"> - AI 驱动的智能图表工具</span> -->
-            </div>
+            <img class="w-6 h-6" src="../assets/img/logo.gif" alt="">
+            <h1 class="text-xl font-semibold text-3c">Daxa</h1>
+            <!-- <span class="text-sm text-gray-500"> - AI 驱动的智能图表工具</span> -->
         </div>
 
         <!-- 右侧用户头像 -->

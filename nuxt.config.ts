@@ -10,12 +10,12 @@ export default defineNuxtConfig({
     },
     app: {
         head: {
-            title: '智绘',
+            title: 'Daxa',
             meta: [
                 { name: 'description', content: 'AI 图表生成器' },
             ],
             link: [
-                { rel: 'icon', type: 'image/svg', href: '/logo.svg' }
+                { rel: 'icon', type: 'image/svg', href: '/logo.svg' },
             ]
         }
     },

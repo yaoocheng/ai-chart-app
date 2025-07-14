@@ -19,8 +19,8 @@ export default defineEventHandler(async (event) => {
         model: "qwen-coder-plus",
         messages: [
             {
-      role: "system",
-      content: `
+                role: "system",
+                content: `
 你是一个前端图表配置生成器，请严格根据用户需求，若已有图表配置，则在已有图表配置上进行最小必要改动，生成新的图表的配置 option。
 
 # 要求：
@@ -39,7 +39,7 @@ ${aiCodeStr ? '- 这是之前的图表配置：' + aiCodeStr + '，在已有配�
 { ...完整图表配置... }
 
       `.trim()
-    },
+            },
             {
                 role: "user",
                 content: `用户需求：${prompt}`
@@ -47,8 +47,8 @@ ${aiCodeStr ? '- 这是之前的图表配置：' + aiCodeStr + '，在已有配�
         ],
         temperature: 0.3
     })
-    
+
     const result = completion.choices?.[0]?.message?.content ?? '{}'
-    
+
     return result;
 })

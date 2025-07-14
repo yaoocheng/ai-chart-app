@@ -7,7 +7,7 @@
                 <transition name="slide-left" appear>
                     <div class="flex-1 w-0 p-4 border-r h-full box-border">
                         <div class="mb-4 text-base text-3c font-medium">配置预览</div>
-                        <CodeBlock :code="showChartCode" :editcode="editCode" @editHandle="editCodeHandle" />
+                        <CodeBlock :code="showChartCode" :editcode="editCode" @edit-handle="editCodeHandle" />
                     </div>
                 </transition>
 
@@ -26,27 +26,29 @@
             <div class="p-6 border-t bg-white text-3c" :class="{ 'form-centered': !chartOption }">
                 <div class="max-w-2xl mx-auto space-y-4">
                     <transition name="fade">
-                        <div v-if="!chartOption" class="text-3xl text-center mb-8">今天想生成什么样的图表呢🤔？</div>
+                        <div v-if="!chartOption" class="text-3xl text-center mb-8">{{ welcomeText }}</div>
                     </transition>
 
                     <div class="flex gap-4">
                         <n-tooltip trigger="hover">
                             <template #trigger>
-                                <n-select v-model:value="chartType" :options="chartTypeOptions" placeholder="图表类型"
-                                    class="flex-1" />
+                                <n-select
+                                    v-model:value="chartType" :options="CHART_TYPE_OPTIONS" placeholder="图表类型"
+                                    class="flex-1 h-10" :render-option="renderOption" />
                             </template>
                             选择你需要的图表类型
                         </n-tooltip>
                     </div>
 
                     <div class="flex gap-4">
-                        <n-input v-model:value="prompt" :loading="loading" type="textarea"
+                        <n-input
+                            v-model:value="prompt" :loading="loading" type="textarea"
                             placeholder="给我说说你的图表需求☝️，例：六个月的代码量统计" :autosize="{
                                 minRows: 4,
                                 maxRows: 5,
                             }" class="flex-1 question_input" @keyup.enter="generateChart">
                             <template v-if="!loading" #suffix>
-                                <n-icon size="20" color="#0e7a0d">
+                                <n-icon size="20" color="#141414">
                                     <ArrowUpCircleSharp />
                                 </n-icon>
                             </template>
@@ -58,10 +60,12 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { ref, watch } from 'vue'
+<script setup>
+import { ref, watch, h, onMounted } from 'vue'
 import { ArrowUpCircleSharp } from '@vicons/ionicons5'
 import stringify from 'stringify-object'
+import { CHART_TYPE_OPTIONS, WELCOME_MESSAGES } from '@/constant'
+import { NTooltip } from 'naive-ui'
 import { useChartAI } from '@/composables/useChartAI'
 import ChartRenderer from '@/components/ChartRenderer.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
@@ -72,24 +76,41 @@ const showChartCode = ref()
 const aiCodeStr = ref()
 const chartType = ref('bar')
 const loading = ref(false)
-
-const chartTypeOptions = [
-    { label: '柱状图', value: 'bar' },
-    { label: '折线图', value: 'line' },
-    { label: '饼图', value: 'pie' },
-    { label: '雷达图', value: 'radar' },
-    { label: '散点图', value: 'scatter' },
-    { label: '面积图', value: 'area' },
-    { label: '漏斗图', value: 'funnel' },
-    { label: '仪表盘', value: 'gauge' },
-    { label: 'K 线图', value: 'candlestick' },
-    { label: '热力图', value: 'heatmap' },
-    { label: '关系图', value: 'graph' },
-    { label: '树图', value: 'tree' },
-    { label: '旭日图', value: 'sunburst' },
-]
 const editCode = ref('');
 const isGeneratingChart = ref(false); // 标志位，防止循环触发
+
+const welcomeText = ref('')
+
+onMounted(() => {
+    welcomeText.value = WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)]
+});
+
+const renderOption = (params) => {
+    const { node, option } = params
+    return h(
+        NTooltip,
+        {
+            placement: 'left', // 或 'top'
+            trigger: 'hover',
+            showArrow: false,
+        },
+        {
+            trigger: () => node,
+            default: () =>
+                h('div', {}, [
+                    h('div', {
+                        style: 'font-weight: bold; margin-bottom: 8px;',
+                        innerText: option.label,
+                    }),
+                    h('img', {
+                        src: option.preview,
+                        style: 'width: 270px; height: 200px; border-radius: 6px; margin-bottom: 8px;',
+                    }),
+                    h('div', { style: 'font-size: 12px; color: #999;' }, option.description),
+                ]),
+        }
+    )
+}
 
 async function generateChart() {
     if (!prompt.value?.trim()) return
@@ -118,7 +139,7 @@ async function generateChart() {
     aiCodeStr.value = formattedCode // 回传AI生成的代码
 
     showChartCode.value = formattedCode; // 代码展示
-    
+
     // 延迟重置标志位，确保 CodeBlock 组件的监听器执行完毕
     const timer = setTimeout(() => {
         clearTimeout(timer)
@@ -127,20 +148,20 @@ async function generateChart() {
 }
 
 watch(chartType, () => {
-    prompt.value ='';
+    prompt.value = '';
     aiCodeStr.value = undefined // 清空旧的 JSON 字符串
 })
 
 // 编辑代码
-const editCodeHandle = (newValCode: string) => {
+const editCodeHandle = (newValCode) => {
     console.log(isGeneratingChart.value);
-    
+
     // 如果正在生成图表，忽略编辑器的变化事件
     if (isGeneratingChart.value) {
         console.log('正在生成图表，忽略编辑器变化');
         return;
     }
-    
+
     let obj
     try {
         // 提取函数体内的对象部分，支持箭头函数格式
