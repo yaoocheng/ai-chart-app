@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full h-[456px]">
+    <div class="w-full h-[490px]">
         <div ref="chartRef" class="w-full h-full" />
     </div>
 </template>
