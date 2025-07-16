@@ -70,7 +70,7 @@ import { useChartAI } from '@/composables/useChartAI'
 import ChartRenderer from '@/components/ChartRenderer.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
 
-const prompt = ref('六个月代码量')
+const prompt = ref('')
 const chartOption = ref()
 const showChartCode = ref()
 const aiCodeStr = ref()
