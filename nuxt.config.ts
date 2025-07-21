@@ -3,7 +3,7 @@ import { NaiveUiResolver } from 'unplugin-vue-components/resolvers'
 import Components from 'unplugin-vue-components/vite'
 
 export default defineNuxtConfig({
-    modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', 'nuxt-monaco-editor'],
+    modules: ['@nuxt/eslint', '@nuxtjs/tailwindcss', 'nuxt-monaco-editor', '@vueuse/nuxt'],
     css: ['highlight.js/styles/github.css'],
     runtimeConfig: {
         dashscopeApiKey: process.env.DASHSCOPE_API_KEY,

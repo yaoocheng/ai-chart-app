@@ -22,7 +22,7 @@
         </transition>
 
         <!-- 底部输入区域 -->
-        <transition name="form-slide" appear>
+        <transition v-if="!chartOption" name="form-slide" appear>
             <div class="p-6 border-t bg-white text-3c" :class="{ 'form-centered': !chartOption }">
                 <div class="max-w-2xl mx-auto space-y-4">
                     <transition name="fade">
@@ -40,10 +40,19 @@
                         </n-tooltip>
                     </div>
 
+                    <!-- <n-tooltip :show="true" :arrow-point-to-center="true" trigger="hover" placement="right">
+                        <template #trigger>
+                            
+                            <div>123</div>
+                        </template>
+                        <div>收起来了，在这提问</div>
+                    </n-tooltip> -->
+
+                    
                     <div class="flex gap-4">
                         <n-input
                             v-model:value="prompt" :loading="loading" type="textarea"
-                            placeholder="给我说说你的图表需求☝️，例：六个月的代码量统计" :autosize="{
+                            placeholder="说说你的图表需求，我可以持续的优化它☝️，例：它是个柱状图，统计的是我上半年每月的代码量，数据是[500, 600, 700, 800, 900, 1000]" :autosize="{
                                 minRows: 4,
                                 maxRows: 5,
                             }" class="flex-1 question_input" @keyup.enter="generateChart">
@@ -57,6 +66,19 @@
                 </div>
             </div>
         </transition>
+
+        <!-- <PromptDrawer v-model:show="isShowPromptDrawer" :cur-chart-type="chartType" /> -->
+
+        <!-- <div v-if="!isShowPromptDrawer&&chartOption" class="fixed top-[20%] left-0">
+            <n-tooltip :show="true" trigger="hover" placement="right">
+                <template #trigger>
+                    <n-icon size="36" color="#141414" @click="isShowPromptDrawer = true">
+                        <CaretForward />
+                    </n-icon>
+                </template>
+                收起来了，在这提问
+            </n-tooltip>
+        </div> -->
     </div>
 </template>
 
@@ -71,15 +93,15 @@ import ChartRenderer from '@/components/ChartRenderer.vue'
 import CodeBlock from '@/components/CodeBlock.vue'
 
 const prompt = ref('')
-const chartOption = ref()
-const showChartCode = ref()
-const aiCodeStr = ref()
+const chartOption = ref() // 配置
+const showChartCode = ref() // 展示代码
+const aiCodeStr = ref() // 给ai的配置
 const chartType = ref('bar')
 const loading = ref(false)
 const editCode = ref('');
 const isGeneratingChart = ref(false); // 标志位，防止循环触发
-
 const welcomeText = ref('')
+// const isShowPromptDrawer = ref(false)
 
 onMounted(() => {
     welcomeText.value = WELCOME_MESSAGES[Math.floor(Math.random() * WELCOME_MESSAGES.length)]
