@@ -22,7 +22,7 @@
         </transition>
 
         <!-- 底部输入区域 -->
-        <transition v-if="!chartOption" name="form-slide" appear>
+        <transition  name="form-slide" appear>
             <div class="p-6 border-t bg-white text-3c" :class="{ 'form-centered': !chartOption }">
                 <div class="max-w-2xl mx-auto space-y-4">
                     <transition name="fade">
